@@ -62,7 +62,7 @@ void CFileReader::ShowProgress()
   int currentPercent = static_cast<int>(m_is.tellg() * 100 / m_fileSize);
   if (currentPercent - m_prevPercent > 5)//сообщаем о прогрессе чтения, если считали больше цифр, 
   {                                      //чем 5% от предыдущего выведенного значения прогресса
-    std::cout << currentPercent << "% red\n";
+    std::cout << currentPercent << "% read\n";
     m_prevPercent = currentPercent;
   }
 }
