@@ -48,8 +48,8 @@ void CFileReader::GetStatisticInfo()
 void CFileReader::ShowProgress()
 {
   int currentPercent = m_currentPosition * NUMBER_SIZE * 100 / m_fileSize;
-  if (currentPercent - m_prevPercent > 5)//сообщаем о прогрессе чтения, если считали больше цифр, 
-  {                                      //чем 5% от предыдущего выведенного значения прогресса
+  if (currentPercent - m_prevPercent > 5)//СЃРѕРѕР±С‰Р°РµРј Рѕ РїСЂРѕРіСЂРµСЃСЃРµ С‡С‚РµРЅРёСЏ, РµСЃР»Рё СЃС‡РёС‚Р°Р»Рё Р±РѕР»СЊС€Рµ С†РёС„СЂ, 
+  {                                      //С‡РµРј 5% РѕС‚ РїСЂРµРґС‹РґСѓС‰РµРіРѕ РІС‹РІРµРґРµРЅРЅРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ РїСЂРѕРіСЂРµСЃСЃР°
     std::cout << currentPercent << "% red\n";
     m_prevPercent = currentPercent;
   }
@@ -59,11 +59,11 @@ bool CFileReader::ReadNumber(uint64_t& number_)
 {
   if (std::ifstream is{ m_argv, std::ios::binary | std::ios::ate })
   {
-    is.seekg(NUMBER_SIZE * m_currentPosition);//пропустить определённое количество байт
+    is.seekg(NUMBER_SIZE * m_currentPosition);//РїСЂРѕРїСѓСЃС‚РёС‚СЊ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р±Р°Р№С‚
     if (!is.read((char*)&number_, NUMBER_SIZE))
       return false;
 
-    // показать прогресс чтения файла
+    // РїРѕРєР°Р·Р°С‚СЊ РїСЂРѕРіСЂРµСЃСЃ С‡С‚РµРЅРёСЏ С„Р°Р№Р»Р°
     ShowProgress();
 
     ++m_currentPosition;

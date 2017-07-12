@@ -10,7 +10,7 @@ class CFileReader
 public:
   CFileReader();
 
-  bool OpenFile(int argc_, char** argv_);//!< Îòêðûâàåò ôàéë, ïåðåäàííûé êàê àðãóìåíò êîìàíäíîé ñòðîêè
+  bool OpenFile(int argc_, char** argv_);//!< ÐžÑ‚ÐºÑ€Ñ‹Ð²Ð°ÐµÑ‚ Ñ„Ð°Ð¹Ð», Ð¿ÐµÑ€ÐµÐ´Ð°Ð½Ð½Ñ‹Ð¹ ÐºÐ°Ðº Ð°Ñ€Ð³ÑƒÐ¼ÐµÐ½Ñ‚ ÐºÐ¾Ð¼Ð°Ð½Ð´Ð½Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐ¸
   bool ReadNumber(uint64_t& number_);
 
 private:
