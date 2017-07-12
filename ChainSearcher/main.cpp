@@ -1,4 +1,4 @@
-﻿#include <set>
+#include <set>
 #include <iostream>
 #include <random>
 #include "fileReader.h"
