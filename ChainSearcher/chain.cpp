@@ -1,14 +1,28 @@
 #include "chain.h"
 
 
-CChain::CChain(uint64_t firstElem_, int position_) :
-m_firstElem(firstElem_),
+CChain::CChain():
+m_firstElem(0),
 m_lastElem(0),
-m_firstElemPosition(position_),
+m_firstElemPosition(0),
 m_lastElemPosition(0),
-m_size(1)
+m_size(0)
 {
 
+}
+
+void CChain::Init(uint64_t firstElem_, int position_)
+{
+  m_firstElem = firstElem_;
+  m_lastElem = 0;
+  m_firstElemPosition = position_;
+  m_lastElemPosition = 0;
+  m_size = 1;
+}
+
+bool CChain::IsInit()
+{
+  return (m_firstElem > 0 && m_firstElemPosition > 0);
 }
 
 uint64_t CChain::GetFirstElem() const
@@ -59,6 +73,11 @@ int CChain::GetSize() const
 void CChain::SetSize(const int size_)
 {
   m_size = size_;
+}
+
+void CChain::IncrementSize()
+{
+  ++m_size;
 }
 
 bool CChain::operator< (const CChain& chain_) const

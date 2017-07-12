@@ -94,16 +94,14 @@ bool IsPrimeNumber(uint64_t number_)
   return true;
 }
 
-void SaveChain(CChain * pChain, uint64_t lastAnalyzeNumber, int counter, std::set<CChain> &chains)
+void SaveChain(CChain& chain, uint64_t lastAnalyzeNumber, int counter, std::set<CChain>& chains)
 {
-  if (pChain)//сохраним текущую цепочку
+  if (chain.IsInit())
   {
-    pChain->SetLastElem(lastAnalyzeNumber);
-    pChain->SetLastElemPosition(counter);
+    chain.SetLastElem(lastAnalyzeNumber);
+    chain.SetLastElemPosition(counter);
 
-    chains.insert(*pChain);
-    delete pChain;
-    pChain = nullptr;
+    chains.insert(chain);
   }
 }
 
@@ -117,10 +115,10 @@ int main(int argc, char *argv[])
   }
 
   std::set<CChain> chains;
-  int counter = 0;
+  int currentNumberPositon = 0;
   bool haveCurentChain = false;
 
-  CChain *pChain = nullptr;
+  CChain chain;
   uint64_t lastAnalyzeNumber = 0;
   int lastAnalyzeNumberPosition = 0;
 
@@ -135,32 +133,30 @@ int main(int argc, char *argv[])
       //проверяем, новое значение - продолжение текущей цепочки или начало новой
       //значение текущее должно быть больше последнего в цепочке
 
-      //нет цепочки или новое простое число меньше или равно предыдущему - создаём
-      if (!haveCurentChain || lastAnalyzeNumber >= testNumber)
+      //нет цепочки или тестируемое число меньше или равно предыдущему - создаём цепочку
+      if (!haveCurentChain || testNumber <= lastAnalyzeNumber)
       {
-        SaveChain(pChain, lastAnalyzeNumber, lastAnalyzeNumberPosition, chains);
+        SaveChain(chain, lastAnalyzeNumber, lastAnalyzeNumberPosition, chains);
 
-
-        pChain = new CChain(testNumber, counter);
+        chain.Init(testNumber, currentNumberPositon);
         lastAnalyzeNumber = testNumber;
-        lastAnalyzeNumberPosition = counter;
+        lastAnalyzeNumberPosition = currentNumberPositon;
         haveCurentChain = true;
       }
-      else//есть цепочка - увеличиваем её длину на 1, запоминаем последнее проанализированное чило
+      //есть цепочка - увеличиваем её длину на 1, запоминаем последнее проанализированное чиcло и его позицию
+      else
       {
-        int currentSize = pChain->GetSize();
-        ++currentSize;
-        pChain->SetSize(currentSize);
+        chain.IncrementSize();
 
         lastAnalyzeNumber = testNumber;
-        lastAnalyzeNumberPosition = counter;
+        lastAnalyzeNumberPosition = currentNumberPositon;
       }
     }
-    ++counter;
+    ++currentNumberPositon;
   }
 
   //сохраним последнюю созданную цепочку
-  SaveChain(pChain, lastAnalyzeNumber, lastAnalyzeNumberPosition, chains);
+  SaveChain(chain, lastAnalyzeNumber, lastAnalyzeNumberPosition, chains);
 
   //не найдено ни одной цепочки
   if (chains.size() == 0)
@@ -172,7 +168,7 @@ int main(int argc, char *argv[])
 
   //выбрать результирующую цепочку по критериям
   auto pResultChain = std::prev(chains.end());
-  std::cout << "First element " << pResultChain->GetFirstElem() << "\n"
+  std::cout << "\nFirst element " << pResultChain->GetFirstElem() << "\n"
     << "First element shift " << pResultChain->GetFirstElemPosition() << "\n"
     << "Last element " << pResultChain->GetLastElem() << "\n"
     << "Last element shift " << pResultChain->GetLastElemPosition() << "\n"

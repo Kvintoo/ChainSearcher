@@ -7,7 +7,10 @@ class CChain
 {
 public:
 
-  CChain(uint64_t firstElem_, int position_);
+  CChain();
+
+  void Init(uint64_t firstElem_, int position_);//<! Инициализирует цепочку
+  bool IsInit();//!< Сообщает, проинициализирована ли цепочка
 
 
   uint64_t GetFirstElem() const;
@@ -24,6 +27,8 @@ public:
 
   int GetSize() const;
   void SetSize(const int size_);
+
+  void IncrementSize();//!< Увеличивает размер цепочки на 1
 
   bool operator< (const CChain& chain_) const;
 
