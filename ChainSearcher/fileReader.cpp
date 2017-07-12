@@ -1,14 +1,19 @@
 #include <iostream>
-#include <fstream>
 #include <sys/stat.h>
 #include "fileReader.h"
 
 
-CFileReader::CFileReader() :
+CFileReader::CFileReader()
+{
+
+}
+
+CFileReader::CFileReader(int argc_, char** argv_) :
 m_currentPosition(0),
 m_prevPercent(0),
 m_fileSize(0)
 {
+  OpenFile(argc_, argv_);
 }
 
 bool CFileReader::OpenFile(int argc_, char** argv_)
@@ -24,8 +29,9 @@ bool CFileReader::OpenFile(int argc_, char** argv_)
     return false;
   }
 
-  std::ifstream is{ argv_[1], std::ios::binary | std::ios::ate };
-  if (!is)
+  
+  m_is.open(argv_[1], std::ios::binary);
+  if (!m_is)
   {
     std::cerr << "Could not open file.\n";
     return false;
@@ -57,20 +63,15 @@ void CFileReader::ShowProgress()
 
 bool CFileReader::ReadNumber(uint64_t& number_)
 {
-  if (std::ifstream is{ m_argv, std::ios::binary | std::ios::ate })
-  {
-    is.seekg(NUMBER_SIZE * m_currentPosition);//пропустить определённое количество байт
-    if (!is.read((char*)&number_, NUMBER_SIZE))
-      return false;
-
-    // показать прогресс чтения файла
-    ShowProgress();
-
-    ++m_currentPosition;
-    return true;
-  }
-
-  else
+  m_is.read((char*)&number_, NUMBER_SIZE);
+  std::cout << number_ << "\n";
+  auto count = m_is.gcount();
+  if (m_is.gcount() != NUMBER_SIZE)
     return false;
 
+  // показать прогресс чтения файла
+  ShowProgress();
+
+  ++m_currentPosition;
+  return true;
 }
