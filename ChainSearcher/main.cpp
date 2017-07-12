@@ -173,7 +173,8 @@ int main(int argc, char *argv[])
   std::cout << "First element " << pResultChain->GetFirstElem() << "\n"
     << "First element shift " << pResultChain->GetFirstElemPosition() << "\n"
     << "Last element " << pResultChain->GetLastElem() << "\n"
-    << "Last element shift " << pResultChain->GetLastElemPosition() << "\n";
+    << "Last element shift " << pResultChain->GetLastElemPosition() << "\n"
+    << "Chain size " << pResultChain->GetSize() << "\n";
 
   std::system("PAUSE");
   return 0;
