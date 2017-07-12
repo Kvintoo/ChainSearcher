@@ -109,8 +109,8 @@ void SaveChain(CChain * pChain, uint64_t lastAnalyzeNumber, int counter, std::se
 
 int main(int argc, char *argv[])
 {
-  CFileReader fileReader;
-  if (!fileReader.OpenFile(argc, argv))
+  CFileReader fileReader(argc, argv);
+  if (!fileReader.IsInitialized())
   {
     std::system("PAUSE");
     return 0;
@@ -127,14 +127,16 @@ int main(int argc, char *argv[])
   uint64_t testNumber = 0;
   while (fileReader.ReadNumber(testNumber))//пока есть значение
   {
+    fileReader.ShowProgress();//показываем прогресс чтения файла
 
-    //если оно простое
+    //если число простое
     if (IsPrimeNumber(testNumber))
     {
       //проверяем, новое значение - продолжение текущей цепочки или начало новой
       //значение текущее должно быть больше последнего в цепочке
 
-      if (!haveCurentChain || lastAnalyzeNumber >= testNumber)//нет цепочки или новое простое число меньше или равно предыдущему - создаём
+      //нет цепочки или новое простое число меньше или равно предыдущему - создаём
+      if (!haveCurentChain || lastAnalyzeNumber >= testNumber)
       {
         SaveChain(pChain, lastAnalyzeNumber, lastAnalyzeNumberPosition, chains);
 

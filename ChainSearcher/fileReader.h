@@ -12,19 +12,21 @@ public:
   CFileReader();
   CFileReader(int argc_, char** argv_);
 
-  bool OpenFile(int argc_, char** argv_);//!< Открывает файл, переданный как аргумент командной строки
-  bool ReadNumber(uint64_t& number_);
+  ~CFileReader();
+
+  bool IsInitialized();//!< Проверяет, можно ли работать с классом CFileReader
+
+  bool ReadNumber(uint64_t& number_);//!< Читает следующее значение из файла
+  void ShowProgress();//!< Отображает прогресс чтения файла
 
 private:
 
-  void GetStatisticInfo();
-  void ShowProgress();
+  bool OpenFile(int argc_, char** argv_);//!< Открывает файл, переданный как аргумент командной строки
+  void GetFileSize(char* argv_);//!< Возвращает размер файла в байтах 
+  
 
-  int m_currentPosition;
-  int m_prevPercent;
-
-  int m_fileSize;
-  char* m_argv;
+  int m_prevPercent;//!< Предыдущее значение прогресса чтения файла в %
+  int m_fileSize;//!< Размер файла в байтах
 
   std::ifstream m_is;
 
