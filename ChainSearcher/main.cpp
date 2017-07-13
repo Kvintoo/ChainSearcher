@@ -45,7 +45,7 @@ bool NeedNewCycle(int power_, uint64_t mod_, uint64_t number_)
   return false;// результат - составное число
 }
 
-bool IsPrimeNumber(uint64_t number_)
+bool IsPrimeNumber(std::mt19937_64& generator_, uint64_t number_)
 {
   //test Miller-Rabin
 
@@ -60,23 +60,22 @@ bool IsPrimeNumber(uint64_t number_)
   uint64_t residue = 0;//остаток (t)
   Factorization(number_ - 1, power, residue);
 
+  const int MAX_INT = 2147483647;
+
   //для простоты зададим k = 5. Далее k можно вычислять в зависимости от длины числа
   for (int i = 1; i <= 5; ++i)
   {
     //Выбрать случайное целое число a в отрезке[2, number_ − 2]
-    std::random_device randomDevice;
-    std::mt19937_64 generator(randomDevice());
-    const int MAX_INT = 2147483647;
     int generatedNumber = 0;
     if (number_ - 2 > MAX_INT)
     {
       std::uniform_int_distribution<> distribution(2, MAX_INT);
-      generatedNumber = distribution(generator);// (a)
+      generatedNumber = distribution(generator_);// (a)
     }
     else
     {
       std::uniform_int_distribution<> distribution(2, static_cast<int>(number_ - 2));
-      generatedNumber = distribution(generator);// (a)
+      generatedNumber = distribution(generator_);// (a)
     }
 
     //x ← a^t mod n, вычисляется с помощью алгоритма возведения в степень по модулю
@@ -141,12 +140,15 @@ int main(int argc, char *argv[])
   int lastAnalyzeNumberPosition = 0;
 
   uint64_t testNumber = 0;
+  std::random_device randomDevice;
+  std::mt19937_64 generator(randomDevice());
+
   while (fileReader.ReadNumber(testNumber))//пока есть значение
   {
     fileReader.ShowProgress();//показываем прогресс чтения файла
 
     //если число простое
-    if (IsPrimeNumber(testNumber))
+    if (IsPrimeNumber(generator, testNumber))
     {
       //проверяем, новое значение - продолжение текущей цепочки или начало новой
       //значение текущее должно быть больше последнего в цепочке
