@@ -10,7 +10,7 @@ public:
   CChain();
 
   void Init(uint64_t firstElem_, int position_);//<! Инициализирует цепочку
-  bool IsInit();//!< Сообщает, проинициализирована ли цепочка
+  bool IsInit();//!< Возвращает true, если цепочка инициализирована
 
 
   uint64_t GetFirstElem() const;

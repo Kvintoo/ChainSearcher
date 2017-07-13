@@ -94,14 +94,32 @@ bool IsPrimeNumber(uint64_t number_)
   return true;
 }
 
-void SaveChain(CChain& chain, uint64_t lastAnalyzeNumber, int counter, std::set<CChain>& chains)
+void SaveChain(CChain& chain, uint64_t lastAnalyzeNumber, int counter)
 {
   if (chain.IsInit())
   {
     chain.SetLastElem(lastAnalyzeNumber);
     chain.SetLastElemPosition(counter);
+  }
+}
 
-    chains.insert(chain);
+void ChooseWinnerChain(CChain& winner_, CChain& candidat_)
+{
+  //или цепочка-кандидат длиннее
+  if (winner_.GetSize() < candidat_.GetSize())
+  {
+    winner_ = candidat_;
+    return;
+  }
+  
+  //при равной длине у цепочки-кандидата 1-й элемент должен быть больше
+  bool sameSizeFirstElemMore = winner_.GetSize() == candidat_.GetSize() && 
+                               winner_.GetFirstElem() < candidat_.GetFirstElem();
+
+  //смещение не проверяем, т.к. читаем файл сначала и у следующей цепочки смещение первого элемента всегда больше
+  if (sameSizeFirstElemMore)
+  {
+      winner_ = candidat_;
   }
 }
 
@@ -114,11 +132,11 @@ int main(int argc, char *argv[])
     return 0;
   }
 
-  std::set<CChain> chains;
+  CChain winnerChain;//цепочка-победитель (результат работы программы)
   int currentNumberPositon = 0;
   bool haveCurentChain = false;
 
-  CChain chain;
+  CChain currentChain;//текущая формируемая цепочка
   uint64_t lastAnalyzeNumber = 0;
   int lastAnalyzeNumberPosition = 0;
 
@@ -136,9 +154,10 @@ int main(int argc, char *argv[])
       //нет цепочки или тестируемое число меньше или равно предыдущему - создаём цепочку
       if (!haveCurentChain || testNumber <= lastAnalyzeNumber)
       {
-        SaveChain(chain, lastAnalyzeNumber, lastAnalyzeNumberPosition, chains);
+        SaveChain(currentChain, lastAnalyzeNumber, lastAnalyzeNumberPosition);
+        ChooseWinnerChain(winnerChain, currentChain);
 
-        chain.Init(testNumber, currentNumberPositon);
+        currentChain.Init(testNumber, currentNumberPositon);
         lastAnalyzeNumber = testNumber;
         lastAnalyzeNumberPosition = currentNumberPositon;
         haveCurentChain = true;
@@ -146,7 +165,7 @@ int main(int argc, char *argv[])
       //есть цепочка - увеличиваем её длину на 1, запоминаем последнее проанализированное чиcло и его позицию
       else
       {
-        chain.IncrementSize();
+        currentChain.IncrementSize();
 
         lastAnalyzeNumber = testNumber;
         lastAnalyzeNumberPosition = currentNumberPositon;
@@ -156,23 +175,23 @@ int main(int argc, char *argv[])
   }
 
   //сохраним последнюю созданную цепочку
-  SaveChain(chain, lastAnalyzeNumber, lastAnalyzeNumberPosition, chains);
+  SaveChain(currentChain, lastAnalyzeNumber, lastAnalyzeNumberPosition);
+  ChooseWinnerChain(winnerChain, currentChain);
 
   //не найдено ни одной цепочки
-  if (chains.size() == 0)
+  if (!winnerChain.IsInit())
   {
     std::cout << "No chains founded." << "\n";
     std::system("PAUSE");
     return 1;
   }
 
-  //выбрать результирующую цепочку по критериям
-  auto pResultChain = std::prev(chains.end());
-  std::cout << "\nFirst element " << pResultChain->GetFirstElem() << "\n"
-    << "First element shift " << pResultChain->GetFirstElemPosition() << "\n"
-    << "Last element " << pResultChain->GetLastElem() << "\n"
-    << "Last element shift " << pResultChain->GetLastElemPosition() << "\n"
-    << "Chain size " << pResultChain->GetSize() << "\n";
+  //вывести параметры результирующей цепочки
+  std::cout << "\nFirst element " << winnerChain.GetFirstElem() << "\n"
+    << "First element shift " << winnerChain.GetFirstElemPosition() << "\n"
+    << "Last element " << winnerChain.GetLastElem() << "\n"
+    << "Last element shift " << winnerChain.GetLastElemPosition() << "\n"
+    << "Chain size " << winnerChain.GetSize() << "\n";
 
   std::system("PAUSE");
   return 0;
